@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EzyIQ CloudWatch</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="header-left">
+            <h1 class="dashboard-title">EzyIQ CloudWatch</h1>
+            <span id="system-status-badge" class="severity-badge normal">NORMAL</span>
+        </div>
+        <div class="header-right">
+            <span id="timestamp" class="timestamp">--</span>
+            <button id="pause-btn" class="btn btn-secondary">Pause</button>
+            <button id="analyze-btn" class="btn btn-primary">Analyze</button>
+        </div>
+    </header>
+
+    <nav class="scenario-tabs">
+        <button class="scenario-tab active" data-scenario="normal">Normal</button>
+        <button class="scenario-tab" data-scenario="cpu_spike">CPU Spike</button>
+        <button class="scenario-tab" data-scenario="memory_leak">Memory Leak</button>
+        <button class="scenario-tab" data-scenario="network_flood">Network Flood</button>
+        <button class="scenario-tab" data-scenario="disk_pressure">Disk Pressure</button>
+    </nav>
+
+    <nav class="content-tabs">
+        <button class="content-tab active" data-tab="metrics">Metrics</button>
+        <button class="content-tab" data-tab="logs">Logs</button>
+        <button class="content-tab" data-tab="analysis">AI Analysis</button>
+    </nav>
+
+    <main class="dashboard-content">
+        <div id="metrics-grid">
+            <!-- LOCAL SYSTEM SECTION -->
+            <div class="metrics-section">
+                <h2 class="section-title">🖥️ Local System</h2>
+                <div class="metrics-grid" id="local-metrics-grid">
+                    <div class="metric-card" data-metric="cpu_percent" data-source="local">
+                        <div class="metric-header"><span class="metric-name">CPU Usage</span><span class="severity-badge normal">NORMAL</span></div>
+                        <div class="metric-value">--</div>
+                        <div class="sparkline-wrapper"><canvas class="sparkline-canvas"></canvas></div>
+                    </div>
+                    <div class="metric-card" data-metric="memory_percent" data-source="local">
+                        <div class="metric-header"><span class="metric-name">Memory</span><span class="severity-badge normal">NORMAL</span></div>
+                        <div class="metric-value">--</div>
+                        <div class="sparkline-wrapper"><canvas class="sparkline-canvas"></canvas></div>
+                    </div>
+                    <div class="metric-card" data-metric="disk_percent" data-source="local">
+                        <div class="metric-header"><span class="metric-name">Disk I/O</span><span class="severity-badge normal">NORMAL</span></div>
+                        <div class="metric-value">--</div>
+                        <div class="sparkline-wrapper"><canvas class="sparkline-canvas"></canvas></div>
+                    </div>
+                    <div class="metric-card" data-metric="net_recv_mb" data-source="local">
+                        <div class="metric-header"><span class="metric-name">Network In</span><span class="severity-badge normal">NORMAL</span></div>
+                        <div class="metric-value">--</div>
+                        <div class="sparkline-wrapper"><canvas class="sparkline-canvas"></canvas></div>
+                    </div>
+                    <div class="metric-card" data-metric="net_sent_mb" data-source="local">
+                        <div class="metric-header"><span class="metric-name">Network Out</span><span class="severity-badge normal">NORMAL</span></div>
+                        <div class="metric-value">--</div>
+                        <div class="sparkline-wrapper"><canvas class="sparkline-canvas"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AWS CLOUDWATCH SECTION -->
+            <div class="metrics-section">
+                <h2 class="section-title">☁️ AWS CloudWatch <span class="section-subtitle" id="aws-instance-label"></span></h2>
+                <div id="aws-error-banner" class="aws-error-banner" style="display:none;"></div>
+                <div class="metrics-grid" id="aws-metrics-grid">
+                    <div class="metric-card" data-metric="cpu_percent" data-source="aws">
+                        <div class="metric-header"><span class="metric-name">CPU Usage</span><span class="severity-badge normal">NORMAL</span></div>
+                        <div class="metric-value">--</div>
+                        <div class="sparkline-wrapper"><canvas class="sparkline-canvas"></canvas></div>
+                    </div>
+                    <div class="metric-card" data-metric="memory_percent" data-source="aws">
+                        <div class="metric-header"><span class="metric-name">Memory</span><span class="severity-badge normal">NORMAL</span></div>
+                        <div class="metric-value">--</div>
+                        <div class="sparkline-wrapper"><canvas class="sparkline-canvas"></canvas></div>
+                    </div>
+                    <div class="metric-card" data-metric="disk_percent" data-source="aws">
+                        <div class="metric-header"><span class="metric-name">Disk</span><span class="severity-badge normal">NORMAL</span></div>
+                        <div class="metric-value">--</div>
+                        <div class="sparkline-wrapper"><canvas class="sparkline-canvas"></canvas></div>
+                    </div>
+                    <div class="metric-card" data-metric="response_latency" data-source="aws">
+                        <div class="metric-header"><span class="metric-name">Latency</span><span class="severity-badge normal">NORMAL</span></div>
+                        <div class="metric-value">--</div>
+                        <div class="sparkline-wrapper"><canvas class="sparkline-canvas"></canvas></div>
+                    </div>
+                    <div class="metric-card" data-metric="error_rate" data-source="aws">
+                        <div class="metric-header"><span class="metric-name">Error Rate</span><span class="severity-badge normal">NORMAL</span></div>
+                        <div class="metric-value">--</div>
+                        <div class="sparkline-wrapper"><canvas class="sparkline-canvas"></canvas></div>
+                    </div>
+                    <div class="metric-card" data-metric="connections" data-source="aws">
+                        <div class="metric-header"><span class="metric-name">Connections</span><span class="severity-badge normal">NORMAL</span></div>
+                        <div class="metric-value">--</div>
+                        <div class="sparkline-wrapper"><canvas class="sparkline-canvas"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="logs-panel" class="panel" style="display: none;">
+            <h2>System Logs</h2>
+            <div class="logs-container"></div>
+        </div>
+
+        <div id="analysis-panel" class="panel" style="display: none;">
+            <h2>AI Analysis</h2>
+            <div class="analysis-container"></div>
+        </div>
+    </main>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
